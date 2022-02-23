@@ -27,5 +27,5 @@ import { useTemplate, addTemplate, listTemplates, inspectTemplate } from './temp
 
    // program.parse();
 
-   parseTemplate('./example/1.jmps')
+   console.log(parseTemplate('./example/1.jmps'));
 })();

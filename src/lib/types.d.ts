@@ -13,5 +13,7 @@ export type ContentAtom = string | VariableAtom;
 
 export type VariableAtom = {
    var: string;
-   fn: (v: string) => string;
+   transformers: StringValueTransformer[];
 }
+
+export type StringValueTransformer = (v: string) => string;
