@@ -1,0 +1,3 @@
+camelCase = (s) => s.toCamelCase();
+%%%
+const %%var_name|camelCase%% = "%%value%%";
