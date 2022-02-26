@@ -1,5 +1,3 @@
-
-
 export type Base = {
    name: string;
    vars: string[];
@@ -13,6 +11,7 @@ export type ContentAtom = string | VariableAtom;
 
 export type VariableAtom = {
    var: string;
+   original: string;
    transformers: StringValueTransformer[];
 }
 

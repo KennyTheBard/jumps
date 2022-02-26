@@ -25,6 +25,7 @@ export function parseTemplate(filepath: string): Template | null {
       const ops = _.tail(match[0].replace(/%/g, '').split('|').map(s => s.trim()));
       const varAtom: VariableAtom = {
          var: varName,
+         original: match[0],
          transformers: ops.map((op: string) => functions[op])
       };
 
