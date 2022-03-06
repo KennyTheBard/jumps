@@ -34,8 +34,8 @@ export class Config {
    private initConfig() {
       fs.mkdirSync(Config.dir);
       fs.mkdirSync(Config.templatesDir);
-      fs.writeFileSync(Config.templatesRegistryPath, '');
-      fs.writeFileSync(Config.settingsPath, '');
+      fs.writeFileSync(Config.templatesRegistryPath, '[]');
+      fs.writeFileSync(Config.settingsPath, '{}');
    }
 
    private loadConfig() {

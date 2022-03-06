@@ -6,6 +6,7 @@ import { config, Config } from '../local/config';
 import * as fs from 'fs';
 import path from 'path';
 import { OptionValues } from 'commander';
+import * as _ from 'lodash';
 
 
 export async function useTemplate(templateName: string) {
@@ -47,7 +48,8 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
    });
    const templateName = response.templateName ?? fileName;
 
-   const existingTemplate = config.templateHeaders.find(header => header.name === templateName);
+   console.log(config.templateHeaders)
+   const existingTemplate = _.find(config.templateHeaders, header => header.name === templateName);
    if (existingTemplate && !options.override) {
       console.log(chalk.bold.red(`Template ${templateName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
       return;
@@ -73,8 +75,7 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
 export function listTemplates() {
    config.templateHeaders
       .map(header => header.name)
-      .map(chalk.yellow)
-      .forEach(console.log);
+      .forEach(templateName => console.log(chalk.bold.yellow(templateName)));
 }
 
 export function inspectTemplate(templateName: string) {
