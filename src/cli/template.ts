@@ -5,6 +5,7 @@ import { parseTemplate, VariableAtom } from '../lib';
 import { config, Config } from '../local/config';
 import * as fs from 'fs';
 import path from 'path';
+import { OptionValues } from 'commander';
 
 
 export async function useTemplate(templateName: string) {
@@ -33,7 +34,7 @@ export async function useTemplate(templateName: string) {
    console.log(chalk.bold.green('Copied to clipboard!') + '\n');
 }
 
-export async function addTemplate(fileName: string, override: boolean = false): Promise<void> {
+export async function addTemplate(fileName: string, options: OptionValues): Promise<void> {
    if (!fs.existsSync(fileName)) {
       console.log(chalk.bold.red('File not found! Please, provide a path to a valid file.'))
       return;
@@ -47,8 +48,12 @@ export async function addTemplate(fileName: string, override: boolean = false): 
    const templateName = response.templateName ?? fileName;
 
    const existingTemplate = config.templateHeaders.find(header => header.name === templateName);
-   if (existingTemplate && !override) {
+   if (existingTemplate && !options.override) {
       console.log(chalk.bold.red(`Template ${templateName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
+      return;
+   }
+   if (!existingTemplate && options.override) {
+      console.log(chalk.bold.red(`Template ${templateName} not found! Please use other name or run without ${chalk.white.italic('--override')} option`));
       return;
    }
 
