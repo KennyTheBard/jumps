@@ -18,6 +18,8 @@ import { addTemplate, inspectTemplate, listTemplates, useTemplate } from './cli'
    templateCommand.command('add').alias('a')
       .argument('<filepath>', 'path to the file to be added as a template')
       .option('-o, --override', 'override existing template')
+      .option('-n, --name <template_name>', 'pass the template name in the command')
+      .option('--no-name-prompt', 'skip the naming prompt for the new template')
       .action(addTemplate);
    templateCommand.command('list').alias('l')
       .action(listTemplates);

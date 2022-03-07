@@ -42,12 +42,17 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
       return;
    }
 
-   const response = await prompts({
-      type: 'text',
-      name: 'templateName',
-      message: `Name for the template ${chalk.dim('(empty if the same as the filename')}`
-   });
-   const templateName = response.templateName ?? fileName;
+   let templateName = path.basename(fileName);
+   if (options.name) {
+      templateName = options.name;
+   } else if (options.noNamePrompt) {
+      const response = await prompts({
+         type: 'text',
+         name: 'templateName',
+         message: `Name for the template ${chalk.dim('(empty if the same as the filename')}`
+      });
+      templateName = response.templateName ?? templateName;
+   }
 
    const templates = fs.readdirSync(TEMPLATES_DIR_PATH);
    const existingTemplate = _.find(templates, t => t === templateName);
