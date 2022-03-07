@@ -4,14 +4,13 @@ import * as fs from 'fs';
 import chalk from 'chalk';
 
 
-export class Config {
-   public static readonly dir = path.join(os.homedir(), '.jumps');
-   public static readonly templatesDir = path.join(Config.dir, 'templates');
-   public static readonly templatesRegistryPath = path.join(Config.dir, 'templates', 'registry.json');
-   public static readonly settingsPath = path.join(Config.dir, 'settings.json');
+export const CONFIG_DIR_PATH = path.join(os.homedir(), '.jumps');
+export const TEMPLATES_DIR_PATH = path.join(CONFIG_DIR_PATH, 'templates');
+export const SETIINGS_PATH = path.join(CONFIG_DIR_PATH, 'settings.json');
 
-   settings: Settings;
-   templateHeaders: TemplateHeader[];
+export class Config {
+
+   public settings: Settings;
 
    constructor() {
       if (!this.configExists()) {
@@ -23,35 +22,26 @@ export class Config {
    }
 
    public updateConfig() {
-      fs.writeFileSync(Config.settingsPath, JSON.stringify(this.settings));
-      fs.writeFileSync(Config.templatesRegistryPath, JSON.stringify(this.templateHeaders));
+      fs.writeFileSync(SETIINGS_PATH, JSON.stringify(this.settings));
    }
 
    private configExists(): boolean {
-      return fs.existsSync(Config.dir);
+      return fs.existsSync(CONFIG_DIR_PATH);
    }
 
    private initConfig() {
-      fs.mkdirSync(Config.dir);
-      fs.mkdirSync(Config.templatesDir);
-      fs.writeFileSync(Config.templatesRegistryPath, '[]');
-      fs.writeFileSync(Config.settingsPath, '{}');
+      fs.mkdirSync(CONFIG_DIR_PATH);
+      fs.mkdirSync(TEMPLATES_DIR_PATH);
+      fs.writeFileSync(SETIINGS_PATH, '{}');
    }
 
    private loadConfig() {
-      this.settings = JSON.parse(fs.readFileSync(Config.settingsPath).toString());
-      this.templateHeaders = JSON.parse(fs.readFileSync(Config.templatesRegistryPath).toString());
+      this.settings = JSON.parse(fs.readFileSync(SETIINGS_PATH).toString());
    }
 }
 
 export interface Settings {
 
-}
-
-export interface TemplateHeader {
-   name: string;
-   created: Date;
-   updated: Date;
 }
 
 export const config = new Config();

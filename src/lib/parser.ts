@@ -1,18 +1,20 @@
 import * as fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import { TEMPLATES_DIR_PATH } from '../local/config';
 import { functions } from './functions';
 import { ContentAtom, Template, VariableAtom } from './types';
 
-const REGEX = /%%([a-zA-Z][a-zA-Z0-9_]*)([ ]*\|[ ]*[a-zA-Z][a-zA-Z0-9_]*[ ]*)*%%/g;
+const REGEX = /%%([a-zA-Z][a-zA-Z0-9_]*)%%/g;
 
-export function parseTemplate(filepath: string): Template | null {
-   if (!fs.existsSync(filepath)) {
+export function parseTemplate(templateName: string): Template | null {
+   const templatePath = path.join(TEMPLATES_DIR_PATH, templateName);
+   if (!fs.existsSync(templatePath)) {
       console.error('Template does not exist');
       return null;
    }
 
-   const buf = fs.readFileSync(filepath, 'utf8');
+   const buf = fs.readFileSync(templatePath, 'utf8');
    const content = buf.toString();
    const matches = content.matchAll(REGEX);
 
@@ -42,7 +44,7 @@ export function parseTemplate(filepath: string): Template | null {
    }
 
    return {
-      name: path.basename(filepath),
+      name: path.basename(templatePath),
       vars: Array.from(vars),
       content: contentAtoms
    };

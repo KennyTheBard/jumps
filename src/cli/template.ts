@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 import clipboard from 'clipboardy';
 import { parseTemplate, VariableAtom } from '../lib';
-import { config, Config } from '../local/config';
+import { config, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH } from '../local/config';
 import * as fs from 'fs';
 import path from 'path';
 import { OptionValues } from 'commander';
@@ -27,6 +27,7 @@ export async function useTemplate(templateName: string) {
       })
    );
 
+   // TODO: move this to lib
    const finalResult = template.content
       .map(a => typeof a === 'string' ? a : replaceVariableAtom(a as VariableAtom, response))
       .join('');
@@ -48,8 +49,8 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
    });
    const templateName = response.templateName ?? fileName;
 
-   console.log(config.templateHeaders)
-   const existingTemplate = _.find(config.templateHeaders, header => header.name === templateName);
+   const templates = fs.readdirSync(TEMPLATES_DIR_PATH);
+   const existingTemplate = _.find(templates, t => t === templateName);
    if (existingTemplate && !options.override) {
       console.log(chalk.bold.red(`Template ${templateName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
       return;
@@ -59,22 +60,11 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
       return;
    }
 
-   fs.writeFileSync(path.join(Config.templatesDir, templateName), fs.readFileSync(fileName));
-   if (existingTemplate) {
-      existingTemplate.updated = new Date();
-   } else {
-      config.templateHeaders.push({
-         name: templateName,
-         created: new Date(),
-         updated: new Date()
-      })
-   }
-   config.updateConfig();
+   fs.writeFileSync(path.join(TEMPLATES_DIR_PATH, templateName), fs.readFileSync(fileName));
 }
 
 export function listTemplates() {
-   config.templateHeaders
-      .map(header => header.name)
+   fs.readdirSync(TEMPLATES_DIR_PATH)
       .forEach(templateName => console.log(chalk.bold.yellow(templateName)));
 }
 
