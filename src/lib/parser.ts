@@ -1,14 +1,14 @@
 import * as fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
-import { TEMPLATES_DIR_PATH } from '../local/config';
+import { getTemplatePath } from '../config';
 import { functions } from './functions';
 import { ContentAtom, Template, VariableAtom } from './types';
 
 const REGEX = /%%([a-zA-Z][a-zA-Z0-9_]*)%%/g;
 
 export function parseTemplate(templateName: string): Template | null {
-   const templatePath = path.join(TEMPLATES_DIR_PATH, templateName);
+   const templatePath = getTemplatePath(templateName);
    if (!fs.existsSync(templatePath)) {
       console.error('Template does not exist');
       return null;

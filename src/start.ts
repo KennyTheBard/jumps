@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addTemplate, inspectTemplate, listTemplates, useTemplate } from './cli';
+import { addTemplate, inspectTemplate, listTemplates, useTemplate, deleteTemplate} from './cli';
 
 (async () => {
    const program = new Command();
@@ -21,6 +21,10 @@ import { addTemplate, inspectTemplate, listTemplates, useTemplate } from './cli'
       .option('-n, --name <template_name>', 'pass the template name in the command')
       .option('--no-name-prompt', 'skip the naming prompt for the new template')
       .action(addTemplate);
+   templateCommand.command('delete').alias('d')
+      .argument('<template_name>')
+      .option('--skip-confirmation')
+      .action(deleteTemplate);
    templateCommand.command('list').alias('l')
       .action(listTemplates);
    templateCommand.command('inspect').alias('i')

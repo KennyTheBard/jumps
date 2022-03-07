@@ -2,11 +2,11 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 import clipboard from 'clipboardy';
 import { parseTemplate, VariableAtom } from '../lib';
-import { config, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH } from '../local/config';
 import * as fs from 'fs';
 import path from 'path';
 import { OptionValues } from 'commander';
 import * as _ from 'lodash';
+import { getTemplatePath, TEMPLATES_DIR_PATH } from '../config';
 
 
 export async function useTemplate(templateName: string) {
@@ -65,7 +65,7 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
       return;
    }
 
-   fs.writeFileSync(path.join(TEMPLATES_DIR_PATH, templateName), fs.readFileSync(fileName));
+   fs.writeFileSync(getTemplatePath(templateName), fs.readFileSync(fileName));
 }
 
 export function listTemplates() {
@@ -80,6 +80,29 @@ export function inspectTemplate(templateName: string) {
       .map(a => typeof a === 'string' ? chalk.green(a) : chalk.bold.red.inverse((a as VariableAtom).original))
       .join('');
    console.log(templateContent + '\n');
+}
+
+export async function deleteTemplate(templateName: string, options: OptionValues) {
+   const templatePath = getTemplatePath(templateName);
+   if (!fs.existsSync(templatePath)) {
+      console.log(chalk.bold.red('File not found! Please, provide a path to a valid file.'))
+      return;
+   }
+
+   if (!options.skipConfirmation) {
+      const response = await prompts({
+         type: 'confirm',
+         name: 'value',
+         initial: false,
+         message: `Do you want to delete ${chalk.bold(templateName)} from templates?`
+      });
+
+      if (!response.value) {
+         return;
+      }
+   }
+
+   fs.rmSync(templatePath);
 }
 
 function replaceVariableAtom(atom: VariableAtom, dict: { [key: string]: string }): string {
