@@ -52,13 +52,13 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
       templateName = response.templateName ?? templateName;
    }
 
-   const templates = fs.readdirSync(TEMPLATES_DIR_PATH);
-   const existingTemplate = _.find(templates, t => t === templateName);
-   if (existingTemplate && !options.override) {
+   const existingTemplates = fs.readdirSync(TEMPLATES_DIR_PATH);
+   const templateWithSameName = _.find(existingTemplates, t => t === templateName);
+   if (templateWithSameName && !options.override) {
       console.log(chalk.bold.red(`Template ${templateName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
       return;
    }
-   if (!existingTemplate && options.override) {
+   if (!templateWithSameName && options.override) {
       console.log(chalk.bold.red(`Template ${templateName} not found! Please use other name or run without ${chalk.white.italic('--override')} option`));
       return;
    }
@@ -83,7 +83,7 @@ export function inspectTemplate(templateName: string) {
 export async function deleteTemplate(templateName: string, options: OptionValues) {
    const templatePath = getTemplatePath(templateName);
    if (!fs.existsSync(templatePath)) {
-      console.log(chalk.bold.red('File not found! Please, provide a path to a valid file.'))
+      console.log(chalk.bold.red('Template not found! Please, provide a valid template name.'))
       return;
    }
 
