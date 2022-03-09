@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import prompts from 'prompts';
 import clipboard from 'clipboardy';
-import { parseTemplate, VariableAtom } from '../lib';
+import { parseTemplate, renderTemplate, VariableAtom } from '../lib';
 import * as fs from 'fs';
 import path from 'path';
 import { OptionValues } from 'commander';
@@ -26,14 +26,12 @@ export async function useTemplate(templateName: string) {
          };
       })
    );
-
-   // TODO: move this to lib
-   const finalResult = template.content
-      .map(a => typeof a === 'string' ? a : replaceVariableAtom(a as VariableAtom, response))
-      .join('');
-   clipboard.writeSync(finalResult);
-   console.log(chalk.white(finalResult) + '\n');
-   console.log(chalk.bold.green('Copied to clipboard!') + '\n');
+   console.log();
+   
+   const content = renderTemplate(template, response);
+   clipboard.writeSync(content);
+   console.log(chalk.white(content) + '\n');
+   console.log(chalk.bold.green('Copied to clipboard!'));
 }
 
 export async function addTemplate(fileName: string, options: OptionValues): Promise<void> {
@@ -103,10 +101,4 @@ export async function deleteTemplate(templateName: string, options: OptionValues
    }
 
    fs.rmSync(templatePath);
-}
-
-function replaceVariableAtom(atom: VariableAtom, dict: { [key: string]: string }): string {
-   let value = dict[atom.var];
-   atom.transformers.forEach(t => value = t(value));
-   return value;
 }
