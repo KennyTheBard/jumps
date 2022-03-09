@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { getTemplatePath, TEMPLATES_DIR_PATH } from '../config';
 
 
-export async function useTemplate(templateName: string) {
+export async function useTemplate(templateName: string, options: OptionValues) {
    const template = parseTemplate(templateName)
 
    const templateContent = template.content
@@ -66,7 +66,7 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
    fs.writeFileSync(getTemplatePath(templateName), fs.readFileSync(fileName));
 }
 
-export function listTemplates() {
+export function listTemplates(options: OptionValues) {
    fs.readdirSync(TEMPLATES_DIR_PATH)
       .forEach(templateName => console.log(chalk.bold.yellow(templateName)));
 }
