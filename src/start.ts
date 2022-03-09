@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { addTemplate, inspectTemplate, listTemplates, useTemplate, deleteTemplate} from './cli';
+import * as cli from './cli';
 
 (async () => {
    const program = new Command();
@@ -14,22 +14,44 @@ import { addTemplate, inspectTemplate, listTemplates, useTemplate, deleteTemplat
       .description('Operations on template files');
    templateCommand.command('use').alias('u')
       .argument('<template_name>')
-      .action(useTemplate);
+      .action(cli.useTemplate);
    templateCommand.command('add').alias('a')
       .argument('<filepath>', 'path to the file to be added as a template')
       .option('-o, --override', 'override existing template')
       .option('-n, --name <template_name>', 'pass the template name in the command')
       .option('--no-name-prompt', 'skip the naming prompt for the new template')
-      .action(addTemplate);
+      .action(cli.addTemplate);
    templateCommand.command('delete').alias('d')
       .argument('<template_name>')
       .option('--skip-confirmation')
-      .action(deleteTemplate);
+      .action(cli.deleteTemplate);
    templateCommand.command('list').alias('l')
-      .action(listTemplates);
+      .action(cli.listTemplates);
    templateCommand.command('inspect').alias('i')
       .argument('<template_name>')
-      .action(inspectTemplate);
+      .action(cli.inspectTemplate);
+
+   // `bundle` command
+   const bundleCommand = program.command('bundle').alias('b')
+      .description('Operations on bundle files');
+   bundleCommand.command('use').alias('u')
+      .argument('<bundle_name>')
+      .action(cli.useBundle);
+   bundleCommand.command('add').alias('a')
+      .argument('<filepath>', 'path to the file to be added as a budnle')
+      .option('-o, --override', 'override existing template')
+      .option('-n, --name <bundle_name>', 'pass the template name in the command')
+      .option('--no-name-prompt', 'skip the naming prompt for the new template')
+      .action(cli.addBundle);
+   bundleCommand.command('delete').alias('d')
+      .argument('<bundle_name>')
+      .option('--skip-confirmation')
+      .action(cli.deleteBundle);
+   bundleCommand.command('list').alias('l')
+      .action(cli.listBundles);
+   bundleCommand.command('inspect').alias('i')
+      .argument('<bundle_name>')
+      .action(cli.inspectBundle);
 
    program.parse();
 })();
