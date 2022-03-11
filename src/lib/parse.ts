@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import { getBundlePath, getTemplatePath } from '../config';
-import { functions } from './functions';
 import { ContentAtom, Template, VariableAtom, Bundle, BundlePage } from './types';
 import * as os from 'os';
 
