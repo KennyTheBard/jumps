@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import chalk from 'chalk';
-import { SETIINGS_PATH, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH } from './constants';
+import { SETIINGS_PATH, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH, BUNDLES_DIR_PATH } from './constants';
 
 
 export class Config {
@@ -27,6 +27,7 @@ export class Config {
    private initConfig() {
       fs.mkdirSync(CONFIG_DIR_PATH);
       fs.mkdirSync(TEMPLATES_DIR_PATH);
+      fs.mkdirSync(BUNDLES_DIR_PATH);
       fs.writeFileSync(SETIINGS_PATH, '{}');
    }
 

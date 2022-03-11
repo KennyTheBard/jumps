@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import prompts from 'prompts';
 import clipboard from 'clipboardy';
-import { parseTemplate, renderTemplate, VariableAtom } from '../lib';
+import { parseTemplate, renderTemplate, Template, VariableAtom } from '../lib';
 import * as fs from 'fs';
+import * as os from 'os';
 import path from 'path';
 import { OptionValues } from 'commander';
 import * as _ from 'lodash';
@@ -11,11 +12,7 @@ import { getTemplatePath, TEMPLATES_DIR_PATH } from '../config';
 
 export async function useTemplate(templateName: string, options: OptionValues) {
    const template = parseTemplate(templateName)
-
-   const templateContent = template.content
-      .map(a => typeof a === 'string' ? chalk.green(a) : chalk.bold.green.inverse((a as VariableAtom).var))
-      .join('');
-   console.log(templateContent + '\n');
+   printTemplate(template);
 
    const response = await prompts(
       template.vars.map(varName => {
@@ -27,7 +24,7 @@ export async function useTemplate(templateName: string, options: OptionValues) {
       })
    );
    console.log();
-   
+
    const content = renderTemplate(template, response);
    clipboard.writeSync(content);
    console.log(chalk.white(content) + '\n');
@@ -72,12 +69,8 @@ export function listTemplates(options: OptionValues) {
 }
 
 export function inspectTemplate(templateName: string) {
-   const template = parseTemplate(templateName)
-
-   const templateContent = template.content
-      .map(a => typeof a === 'string' ? chalk.green(a) : chalk.bold.red.inverse((a as VariableAtom).original))
-      .join('');
-   console.log(templateContent + '\n');
+   const template = parseTemplate(templateName);
+   printTemplate(template);
 }
 
 export async function deleteTemplate(templateName: string, options: OptionValues) {
@@ -101,4 +94,11 @@ export async function deleteTemplate(templateName: string, options: OptionValues
    }
 
    fs.rmSync(templatePath);
+}
+
+function printTemplate(template: Template) {
+   const templateContent = template.content
+      .map(a => typeof a === 'string' ? chalk.green(a) : chalk.bold.red.inverse((a as VariableAtom).original))
+      .join('');
+   console.log(templateContent + os.EOL);
 }

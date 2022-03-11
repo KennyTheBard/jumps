@@ -1,16 +1,41 @@
 import chalk from 'chalk';
 import prompts from 'prompts';
 import clipboard from 'clipboardy';
-import { parseTemplate, renderTemplate, VariableAtom } from '../lib';
 import * as fs from 'fs';
+import * as os from 'os';
 import path from 'path';
 import { OptionValues } from 'commander';
 import * as _ from 'lodash';
 import { BUNDLES_DIR_PATH, getBundlePath } from '../config';
+import { Bundle, parseBundle, renderBundle, VariableAtom } from '../lib';
 
 
 export async function useBundle(bundleName: string, options: OptionValues) {
-   console.error('Not implemented!');
+   const bundle = parseBundle(bundleName);
+   printBundle(bundle);
+
+   const response = await prompts(
+      bundle.vars.map(varName => {
+         return {
+            type: 'text',
+            name: varName,
+            message: `Value for ${varName}`
+         };
+      })
+   );
+   console.log();
+
+   const contents = renderBundle(bundle, response);
+   for (const renderPath of Object.keys(contents)) {
+      const destinationPath = path.join(process.cwd(), renderPath);
+      if (!fs.existsSync(destinationPath)) {
+         fs.mkdirSync(destinationPath, { recursive: true });
+      }
+      fs.writeFileSync(destinationPath, contents[renderPath]);
+      
+      console.log(chalk.yellow(`Rendered bundle page at ${chalk.italic.bold(destinationPath)}!`));
+   }
+   console.log(chalk.bold.green('Bundle completely rendered!'));
 }
 
 export async function addBundle(fileName: string, options: OptionValues): Promise<void> {
@@ -51,7 +76,8 @@ export function listBundles(options: OptionValues) {
 }
 
 export function inspectBundle(bundleName: string, options: OptionValues) {
-   console.error('Not implemented!');
+   const bundle = parseBundle(bundleName);
+   printBundle(bundle);
 }
 
 export async function deleteBundle(bundleName: string, options: OptionValues) {
@@ -75,4 +101,15 @@ export async function deleteBundle(bundleName: string, options: OptionValues) {
    }
 
    fs.rmSync(bundlePath);
+}
+
+
+function printBundle(bundle: Bundle) {
+   const bundleContent = bundle.pages
+      .map(page => page.content)
+      .map(content => content
+         .map(a => typeof a === 'string' ? chalk.green(a) : chalk.bold.red.inverse((a as VariableAtom).original))
+         .join(''))
+      .join(os.EOL);
+   console.log(bundleContent + os.EOL);
 }
