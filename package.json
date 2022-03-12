@@ -1,9 +1,23 @@
 {
-  "name": "jumps",
-  "version": "0.1.0",
+  "name": "@kennythebard/jumps",
+  "version": "0.1.2",
   "description": "Boilerplate generator using templates",
-  "main": "start.js",
+  "main": "build/start.js",
+  "bin": {
+    "jumps": "build/start.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "/build"
+  ],
+  "pkg": {
+    "scripts": "build/**/*.js"
+  },
   "scripts": {
+    "package:linux": "pkg . --no-bytecode --targets node14-linux-x64 --output bin/linux/snip",
+    "package:macos": "pkg . --no-bytecode --targets node14-macos-x64 --output bin/macos/snip",
     "build": "tsc",
     "watch": "tsc -w",
     "start": "node build/start.js"
