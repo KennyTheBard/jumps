@@ -28,11 +28,12 @@ export async function useBundle(bundleName: string, options: OptionValues) {
    const contents = renderBundle(bundle, response);
    for (const renderPath of Object.keys(contents)) {
       const destinationPath = path.join(process.cwd(), renderPath);
-      if (!fs.existsSync(destinationPath)) {
-         fs.mkdirSync(destinationPath, { recursive: true });
+      const dirname = path.dirname(renderPath);
+      if (!fs.statSync(dirname)) {
+         fs.mkdirSync(dirname, { recursive: true });
       }
       fs.writeFileSync(destinationPath, contents[renderPath]);
-      
+
       console.log(chalk.yellow(`Rendered bundle page at ${chalk.italic.bold(destinationPath)}!`));
    }
    console.log(chalk.bold.green('Bundle completely rendered!'));
@@ -60,10 +61,6 @@ export async function addBundle(fileName: string, options: OptionValues): Promis
    const bundleWithSameName = _.find(existingBundles, t => t === bundleName);
    if (bundleWithSameName && !options.override) {
       console.log(chalk.bold.red(`Bundle ${bundleName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
-      return;
-   }
-   if (!bundleWithSameName && options.override) {
-      console.log(chalk.bold.red(`Bundle ${bundleName} not found! Please use other name or run without ${chalk.white.italic('--override')} option`));
       return;
    }
 

@@ -55,10 +55,6 @@ export async function addTemplate(fileName: string, options: OptionValues): Prom
       console.log(chalk.bold.red(`Template ${templateName} already exists! Please use other name or use ${chalk.white.italic('--override')} option`));
       return;
    }
-   if (!templateWithSameName && options.override) {
-      console.log(chalk.bold.red(`Template ${templateName} not found! Please use other name or run without ${chalk.white.italic('--override')} option`));
-      return;
-   }
 
    fs.writeFileSync(getTemplatePath(templateName), fs.readFileSync(fileName));
 }
