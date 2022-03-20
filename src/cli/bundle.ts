@@ -29,7 +29,7 @@ export async function useBundle(bundleName: string, options: OptionValues) {
    for (const renderPath of Object.keys(contents)) {
       const destinationPath = path.join(process.cwd(), renderPath);
       const dirname = path.dirname(renderPath);
-      if (!fs.statSync(dirname)) {
+      if (!fs.existsSync(dirname)) {
          fs.mkdirSync(dirname, { recursive: true });
       }
       fs.writeFileSync(destinationPath, contents[renderPath]);

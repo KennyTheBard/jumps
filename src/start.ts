@@ -8,7 +8,7 @@ import * as cli from './cli';
 
    program
       .name('jumps')
-      .version('0.1.10')
+      .version('0.1.11')
       .description('Boilerplate code generator using templates');
 
    // `template` command
