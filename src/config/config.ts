@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import chalk from 'chalk';
-import { SETIINGS_PATH, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH, BUNDLES_DIR_PATH } from './constants';
+import { SETTINGS_PATH, CONFIG_DIR_PATH, TEMPLATES_DIR_PATH, BUNDLES_DIR_PATH } from './constants';
 
 
 export class Config {
@@ -17,7 +17,7 @@ export class Config {
    }
 
    public updateConfig() {
-      fs.writeFileSync(SETIINGS_PATH, JSON.stringify(this.settings));
+      fs.writeFileSync(SETTINGS_PATH, JSON.stringify(this.settings));
    }
 
    private configExists(): boolean {
@@ -28,11 +28,11 @@ export class Config {
       fs.mkdirSync(CONFIG_DIR_PATH);
       fs.mkdirSync(TEMPLATES_DIR_PATH);
       fs.mkdirSync(BUNDLES_DIR_PATH);
-      fs.writeFileSync(SETIINGS_PATH, '{}');
+      fs.writeFileSync(SETTINGS_PATH, '{}');
    }
 
    private loadConfig() {
-      this.settings = JSON.parse(fs.readFileSync(SETIINGS_PATH).toString());
+      this.settings = JSON.parse(fs.readFileSync(SETTINGS_PATH).toString());
    }
 }
 
